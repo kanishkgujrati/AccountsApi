@@ -13,7 +13,7 @@ namespace AccountsApi.Model
     public class DocType
     {
         [Key]
-   
+
         public int DocTypeId { get; set; }
 
         [Required]
@@ -145,46 +145,46 @@ namespace AccountsApi.Model
     }
 
     [Table("Accounts")]
-        [PrimaryKey("AccountId")]
-        public class Account
-        {
-            [Key]
-            [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-            public long AccountId { get; set; }
-            
-            [Required]
-            public decimal Balance { get; set; }
+    [PrimaryKey("AccountId")]
+    public class Account
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long AccountId { get; set; }
 
-            [Required]
-            public int wd_Quota { get; set; }
+        [Required]
+        public decimal Balance { get; set; }
 
-            [Required]
-            public int dp_Quota { get; set; }
+        [Required]
+        public int wd_Quota { get; set; }
 
-            [Required]
-            public bool isActive { get; set; }
+        [Required]
+        public int dp_Quota { get; set; }
 
-            [Required]
-            public int CustomerID { get; set; }
+        [Required]
+        public bool isActive { get; set; }
 
-            [Required]
-            public int TypeID { get; set; }
+        [Required]
+        public int CustomerID { get; set; }
 
-            [Required]
-            [StringLength(11)]
-            public string BranchID { get; set; }
+        [Required]
+        public int TypeID { get; set; }
 
-           [ForeignKey("CustomerID")]
-           public Customer Customer {  get; set; }
+        [Required]
+        [StringLength(11)]
+        public string BranchID { get; set; }
 
-            [ForeignKey("BranchID")]
-            public Branch Branch { get; set; }
+        [ForeignKey("CustomerID")]
+        public Customer Customer { get; set; }
 
-            [ForeignKey("TypeID")]
-            public AccountType AccountType { get; set; }
+        [ForeignKey("BranchID")]
+        public Branch Branch { get; set; }
+
+        [ForeignKey("TypeID")]
+        public AccountType AccountType { get; set; }
 
 
-        }
+    }
 
     [Table("Branches")]
     [PrimaryKey("BranchID")]
@@ -237,30 +237,35 @@ namespace AccountsApi.Model
         [Required]
         public string BenefIFSC { get; set; }
 
-       
+
         [Required]
         public long AccountId { get; set; }
-       
+
         [Required]
         [DefaultValue(true)]
         public bool IsActive { get; set; }
 
-    
-
-
-
-        [ForeignKey("AccountId")]
-        public Account Account { get; set; }
-
-
-
-      
-
-/*        [ForeignKey("Dest_Acc")]
-        public  Account Account { get; set; }*/
-
-
     }
+
+    public class BeneficiaryInputModel
+    {
+        [Required]
+        public string BenefName { get; set; }
+
+        [Required]
+        public long BenefAccount { get; set; }
+
+        [Required]
+        public string BenefIFSC { get; set; }
+
+        [Required]
+        public long AccountId { get; set; }
+
+        [Required]
+        [DefaultValue(true)]
+        public bool IsActive { get; set; }
+    }
+
     [Table("Transactions")]
     [PrimaryKey("TransactionID")]
     public class Transaction
@@ -283,23 +288,23 @@ namespace AccountsApi.Model
         public long Dest_acc { get; set; }
     }
     public class BankingAppDbContext : DbContext
-        {
-            public DbSet<Account> Accounts { get; set; }
-            public DbSet<Branch> Branches { get; set; }
-            public DbSet<AccountType> AccountTypes { get; set; }
+    {
+        public DbSet<Account> Accounts { get; set; }
+        public DbSet<Branch> Branches { get; set; }
+        public DbSet<AccountType> AccountTypes { get; set; }
 
-             public DbSet<Transaction> Transactions {  get; set; }
-           public DbSet<Beneficiary> Beneficiaries {  get; set; }
-          
-        public DbSet<User> Users {  get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Beneficiary> Beneficiaries { get; set; }
+
+        public DbSet<User> Users { get; set; }
 
         public DbSet<DocType> DocTypes { get; set; }
 
         public DbSet<Document> Documents { get; set; }
 
-        public DbSet<Customer> Customers {  get; set; }
+        public DbSet<Customer> Customers { get; set; }
 
-        public DbSet<Role> Roles {  get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         public BankingAppDbContext(DbContextOptions<BankingAppDbContext> options)
          : base(options)

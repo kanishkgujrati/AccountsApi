@@ -4,10 +4,10 @@ namespace AccountsApi.Repository
 {
     public interface IBeneficiaryRepository
     {
-       public  Task<Beneficiary> Addbeneficiary(Beneficiary beneficiary);
+       public  Task<Beneficiary> Addbeneficiary(BeneficiaryInputModel beneficiary);
 
-       public Task<IEnumerable<Beneficiary>> ListBeneficiary(long accoundId);
+       public Task<IEnumerable<Beneficiary>> ListBeneficiary(long accountId);
 
-       public Task<bool>DeleteBenficiary(long beneficiaryId);
+       public Task<bool>DeleteBenficiary(long accountId);
     }
 }
