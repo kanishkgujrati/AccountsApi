@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.Contracts;
 
 namespace AccountsApi.Controllers
 {
@@ -7,7 +8,6 @@ namespace AccountsApi.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        [HttpGet("GetAccount/{id}")]
-
+       
     }
 }

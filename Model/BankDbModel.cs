@@ -301,12 +301,18 @@ namespace AccountsApi.Model
 
         public DbSet<Role> Roles {  get; set; }
 
-            protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            {
-                optionsBuilder.UseSqlServer
-                    (@"Server=(local)\MSSQLSERVERNEW;database=NewBankingApp;integrated security=sspi;trustservercertificate=true;multipleactiveresultsets=true");
-            }
-
+        public BankingAppDbContext(DbContextOptions<BankingAppDbContext> options)
+         : base(options)
+        {
         }
-    
+
+
+        /* protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+         {
+             optionsBuilder.UseSqlServer
+                 (@"Server=(local)\MSSQLSERVERNEW;database=NewBankingApp;integrated security=sspi;trustservercertificate=true;multipleactiveresultsets=true");
+         }*/
+
+    }
+
 }
