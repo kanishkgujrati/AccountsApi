@@ -29,14 +29,6 @@ namespace AccountsApi.Repository
                 {
                     throw new ArgumentException("Beneficiary name is required.", nameof(beneficiaryInput.BenefName));
                 }
-                if (beneficiaryInput.BenefAccount.ToString().Length != 13 || !beneficiaryInput.BenefAccount.ToString().All(char.IsDigit))
-                {
-                    throw new ArgumentException("Beneficiary account number must be a 13-digit number.", nameof(beneficiaryInput.BenefAccount));
-                }
-                if (beneficiaryInput.AccountId.ToString().Length != 13 || !beneficiaryInput.AccountId.ToString().All(char.IsDigit))
-                {
-                    throw new ArgumentException("Account ID must be a 13-digit number.", nameof(beneficiaryInput.AccountId));
-                }
                 // Check if BenefAccount exists in the Accounts table
                 var accountExists = await _context.Accounts.AnyAsync(a => a.AccountId == beneficiaryInput.BenefAccount);
                 if (!accountExists)
@@ -71,7 +63,7 @@ namespace AccountsApi.Repository
             }
             catch(Exception ex)
             {
-                throw new Exception("Error occurred while adding beneficiary");
+                throw new Exception(ex.Message);
             }
         }
 
@@ -79,19 +71,35 @@ namespace AccountsApi.Repository
         {
             try
             {
+                if (beneficiaryId <= 0)
+                {
+                    throw new ArgumentException("Beneficiary ID must be greater than zero.", nameof(beneficiaryId));
+                }
                 var beneficiary = await _context.Beneficiaries.FirstOrDefaultAsync(b => b.BenefAccount == beneficiaryId && b.IsActive == true);
                 if (beneficiary == null)
                 {
-                    return false;
+                    throw new KeyNotFoundException("Beneficiary not found or is already inactive.");
                 }
 
                 beneficiary.IsActive = false;
                 await _context.SaveChangesAsync();
                 return true;
             }
+            catch (ArgumentException ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new Exception("Database update failed while deleting beneficiary.", ex);
+            }
             catch (Exception ex)
             {
-                throw new Exception("Error occurred while deleting beneficiary", ex);
+                throw new Exception(ex.Message);
             }
         }
 
@@ -99,13 +107,48 @@ namespace AccountsApi.Repository
         {
             try
             {
-                return await _context.Beneficiaries
-                    .Where(b => b.AccountId == accountId && b.IsActive == true)
+                // Check if accountId is valid
+                if (accountId <= 0)
+                {
+                    throw new ArgumentException("Account ID must be greater than zero.", nameof(accountId));
+                }
+
+                // Check if the AccountId exists in the Accounts table
+                var accountExists = await _context.Accounts.AnyAsync(a => a.AccountId == accountId);
+                if (!accountExists)
+                {
+                    throw new KeyNotFoundException("Account does not exist.");
+                }
+
+                // Retrieve the list of beneficiaries
+                var beneficiaries = await _context.Beneficiaries
+                    .Where(b => b.AccountId == accountId && b.IsActive)
                     .ToListAsync();
+
+                // Check if there are any beneficiaries
+                if (!beneficiaries.Any())
+                {
+                    throw new InvalidOperationException("No beneficiaries found for the given account ID.");
+                }
+
+
+                return beneficiaries;
+            }
+            catch (ArgumentException ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException(ex.Message);
             }
             catch (Exception ex)
             {
-                // Log the exception or handle it appropriately
+                // Log the exception or handle it appropriately 
                 throw new Exception("Error occurred while listing beneficiaries", ex);
             }
         }
